@@ -17,6 +17,7 @@ def create_commit_trace(repo):
         for commit in repo.iter_commits(branch):
             if commit.hexsha not in commit_trace:
                 commit_trace[commit.hexsha] = {
+                    "date": commit.committed_datetime.strftime("%Y-%m-%d %H:%M:%S"),
                     "author_name": commit.author.name,
                     "message": commit.summary,
                     "parents": [p.hexsha for p in commit.parents],
@@ -43,6 +44,7 @@ def convert_to_digraph(commit_trace):
     for commit_hash, commit_info in commit_trace.items():
         node_label = (
             f"{commit_hash[:7]}\n"
+            f"Date: {commit_info['date']}\n"
             f"Author: {commit_info['author_name']}\n"
             f"Message: {commit_info['message']}\n"
             f"Branches: {', '.join(commit_info['branches'])}"
