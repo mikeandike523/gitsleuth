@@ -43,7 +43,7 @@ def convert_to_digraph(commit_trace):
     dot = Digraph('CommitGraph', node_attr={'style': 'filled', 'color': 'lightyellow'})
     for commit_hash, commit_info in commit_trace.items():
         node_label = (
-            f"{commit_hash[:7]}\n"
+            f"{commit_hash}\n"
             f"Date: {commit_info['date']}\n"
             f"Author: {commit_info['author_name']}\n"
             f"Message: {commit_info['message']}\n"
