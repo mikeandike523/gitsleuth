@@ -24,6 +24,10 @@ ROUTES = {
         file="setup_tracking.py",
         short_description="Setup a local branch to track every remote branch in the repository",
     ),
+    "investigate-files": SimpleNamespace(
+        file="investigate_files.py",
+        short_description="investigate one or more files from an old commit"
+    )
 }
 
 @click.command(context_settings=dict(
