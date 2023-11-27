@@ -1,6 +1,7 @@
 click==8.1.7
 colorama==0.4.6
 gitdb==4.0.10
+gitignore-parser==0.1.9
 GitPython==3.1.35
 graphviz==0.20.1
 smmap==5.0.0
