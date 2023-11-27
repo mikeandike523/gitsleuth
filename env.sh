@@ -1,5 +1,5 @@
 #!/bin/bash
 
-cd "$(dirname "$0")"
+dn="$(dirname "$0")"
 
-source ./pyenv/bin/activate
+source "$dn/pyenv/bin/activate"

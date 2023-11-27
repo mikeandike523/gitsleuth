@@ -1,7 +1,5 @@
 #!/bin/bash
 
-cd "$(dirname "$0")"
+dn="$(dirname "$0")"
 
-source ./env.sh
-python3 ./gitsleuth.py "$(pwd)" "$@"
-source ./vne.sh
+"$dn/pyenv/bin/python3" "$dn/gitsleuth.py" "$(pwd)" "$@"
