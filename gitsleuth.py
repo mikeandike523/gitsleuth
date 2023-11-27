@@ -27,6 +27,10 @@ ROUTES = {
     "investigate-files": SimpleNamespace(
         file="investigate_files.py",
         short_description="investigate one or more files from an old commit"
+    ),
+    "source-tree": SimpleNamespace(
+        file="source_tree.py",
+        short_description="Visualize the source tree of the repository"
     )
 }
 
