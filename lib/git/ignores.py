@@ -142,7 +142,7 @@ def collect_included_or_excluded_files(repo_root_directory: str, collect_mode: C
     inner([])
     if path_return_mode == PathReturnMode.RELATIVE:
         return collected_relpaths
-    return list(map(lambda path: os.path.normalize(os.path.join(repo_root_directory, path)), collected_relpaths))
+    return list(filter(lambda x: not len(x.strip())==0,map(lambda path: os.path.normalize(os.path.join(repo_root_directory, path)), collected_relpaths)))
 
 
 

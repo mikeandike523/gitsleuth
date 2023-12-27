@@ -81,7 +81,7 @@ def cli(init_cwd,command, args, show_help):
             click.echo(colored(f"Error: {result.stderr}", 'red'), err=True)
             sys.exit(result.returncode)
         else:
-            click.echo(result.stdout)
+            sys.stdout.write(result.stdout)
 
     except Exception as e:
         click.echo(colored(f"Error: {e}", 'red'), err=True)

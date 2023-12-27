@@ -15,17 +15,27 @@ def list_source_files_feature(repo_root: str, collect_mode: CollectMode) -> [str
 
     files = repo_ignore_checker.collect_excluded_files(PathReturnMode.RELATIVE) if collect_mode == CollectMode.EXCLUDED else repo_ignore_checker.collect_included_files()
 
-    for file in files:
-        click.echo(file)
+    files = list(filter(lambda file: len(file.strip()) > 0, files))
+
+    message = ""
+
+    for i, file in enumerate(files):
+        message += f"{file}"
+        if i < len(files) - 1:
+            message += "\n" 
+
+    return message
 
 @click.command()
 @click.option("-h","--help","show_help",is_flag=True)
 @click.option("--cwd","cwd", default=None)
 @click.argument("subcommand", type=click.STRING, required=True)
+@click.option("--checklist", is_flag=True, default=False)
 def source_tree(
     show_help: bool,
     cwd: Optional[str],
     subcommand: str,
+    checklist: bool
 ):
     
     if not cwd:
@@ -39,9 +49,15 @@ def source_tree(
         sys.exit(0)
 
     if subcommand == "list-included":
-        list_source_files_feature(cwd, CollectMode.INCLUDED)
-    elif subcommand == "list-excluded":
-        list_source_files_feature(cwd, CollectMode.EXCLUDED)
+        message = list_source_files_feature(cwd, CollectMode.INCLUDED)
+        if not checklist:
+            sys.stdout.write(message)
+        else:
+            lines = message.splitlines()
+            for i,line in enumerate(lines):
+                sys.stdout.write(f"- [ ] {line}")
+                if i < len(lines) - 1:
+                    sys.stdout.write("\n")
     else:
         click.echo(f"Unknown subcommand: {subcommand}")
 
