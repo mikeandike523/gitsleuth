@@ -7,6 +7,7 @@ from typing import Optional
 import click
 
 from lib.git.ignores import CollectMode, RepoIgnoreChecker, PathReturnMode
+from lib.md import escape_for_markdown
 
 def list_source_files_feature(repo_root: str, collect_mode: CollectMode) -> [str]:
     repo_ignore_checker = RepoIgnoreChecker(repo_root)
@@ -55,7 +56,7 @@ def source_tree(
         else:
             lines = message.splitlines()
             for i,line in enumerate(lines):
-                sys.stdout.write(f"- [ ] {line}")
+                sys.stdout.write(f"- [ ] {escape_for_markdown(line)}")
                 if i < len(lines) - 1:
                     sys.stdout.write("\n")
     else:
