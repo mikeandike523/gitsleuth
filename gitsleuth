@@ -1,5 +1,16 @@
 #!/bin/bash
 
+# Get the directory of the script
 dn="$(dirname "$0")"
 
-"$dn/pyenv/bin/python3" "$dn/gitsleuth.py" "$(pwd)" "$@"
+# Check the operating system
+if [[ "$OSTYPE" == "darwin"* || "$OSTYPE" == "linux-gnu" ]]; then
+    # On macOS or Linux, use the virtualenv's Python
+    "$dn/pyenv/bin/python3" "$dn/gitsleuth.py" "$(pwd)" "$@"
+elif [[ "$OSTYPE" == "msys" || "$OSTYPE" == "win32" ]]; then
+    # On Windows, use the virtualenv's Python
+    "$dn/pyenv/Scripts/python.exe" "$dn/gitsleuth.py" "$(pwd)" "$@"
+else
+    echo "Unsupported operating system: $OSTYPE"
+    exit 1
+fi
