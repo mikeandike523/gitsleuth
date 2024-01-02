@@ -29,7 +29,7 @@ def get_branchstart_name(commit: git.Commit, repo: git.Repo) -> str:
     # if found, return the branch name
     # if not, then the commit is not a branch start and return None
     for branch in repo.branches:
-        if branch.commit.hexsha == commit.hexsha:
+        if branch.commit == commit:
             return branch.name
     return None
 
@@ -67,10 +67,10 @@ class BackTraverser:
             and potential_branchstart_name!= self.branch_name
             and not permit_branch_boundary_crossing):
                 raise BranchBoundaryError(self.branch_name, potential_branchstart_name)
-            next_branchname = get_branchstart_name(parent.commit, self.repo)
+            next_branchname = get_branchstart_name(parent, self.repo)
             if next_branchname is None:
                 next_branchname = self.branch_name
-            next_traverser = BackTraverser(self.repo, next_branchname, parent.commit)
+            next_traverser = BackTraverser(self.repo, next_branchname, parent)
             parent_satisfied = next_traverser.walk_until(condition, permit_branch_boundary_crossing)
             satisfied.extend(parent_satisfied)
         return satisfied
@@ -81,7 +81,8 @@ class BackTraverser:
 @click.option("--cwd","cwd", default=None)
 @click.option("--identify", is_flag=True, default=False)
 @click.option("--all-time", is_flag=True, default=False)
-@click.argument("filename", required=True,type=click.STRING)
+# `required` argument had to be false since the "gitsleuth" launcher was being tripped up in the -h/--help case
+@click.argument("filename", required=False,type=click.STRING)
 def recover_file(show_help: bool,cwd: str, identify: str, all_time, filename: str):
     """
     Command: recover-file
@@ -114,12 +115,17 @@ def recover_file(show_help: bool,cwd: str, identify: str, all_time, filename: st
         click.echo(dedent(recover_file.__doc__))
         sys.exit(0)
 
+    # checks to make sure that not performing operations on the gitsleuth installation directory
     if os.path.normpath(os.path.realpath(cwd)) == os.path.normpath(os.path.realpath(
         os.path.dirname(os.path.dirname(os.path.abspath(__file__))))):
         sys.stderr.write(f"Could not open repository in \"{os.getcwd()}\": {e}\n")
         sys.exit(1)
 
     os.chdir(cwd)
+
+    if not filename:
+        sys.stderr.write("No filename provided\n")
+        sys.exit(1)
 
     # clean up the filename according to the rules mentioned in the help text
 
@@ -132,34 +138,6 @@ def recover_file(show_help: bool,cwd: str, identify: str, all_time, filename: st
 
     # Also, to make things easier, collapse multiple slashes into a single one
     filename = re.sub(r"\/+", "/", filename)
-
-    # also clean up the cwd
-
-    clean_cwd = cwd.replace("\\","/")
-    clean_cwd = clean_cwd.lstrip("/")
-    clean_cwd = clean_cwd.rstrip("/")
-    clean_cwd = re.sub(r"\/+", "/", clean_cwd)
-
-    # The cwd is absolute so it deserves one leading forward slash, but only on linux
-
-    is_unix_of_some_sort = os.name == "posix"
-
-    if is_unix_of_some_sort:
-        clean_cwd = "/" + clean_cwd
-
-    desired_file_absolute_path = os.path.normpath(os.path.join(clean_cwd, filename))
-
-    if not os.path.exists(desired_file_absolute_path):
-        sys.stderr.write(f"Could not find {desired_file_absolute_path}\n")
-        sys.exit(1)
-
-    if not os.path.isfile(desired_file_absolute_path):
-        sys.stderr.write(f"{desired_file_absolute_path} is not a file\n")
-        sys.exit(1)
-
-    if os.path.islink(desired_file_absolute_path):
-        sys.stderr.write(f"{desired_file_absolute_path} is a symlink. Symlinks are not followed or supported\n")
-        sys.exit(1)
 
     repo = None
 
@@ -179,10 +157,11 @@ def recover_file(show_help: bool,cwd: str, identify: str, all_time, filename: st
         def condition(back_traverser: BackTraverser) -> bool:
             t_commit = back_traverser.get_commit()
             t_tree =t_commit.tree
-            t_blob = t_tree / filename
-            if t_blob.exists():
+            try:
+                t_tree / filename
                 return True
-            return False
+            except KeyError:
+                return False
         
         starting_branch_name = repo.active_branch.name
 
@@ -197,19 +176,19 @@ def recover_file(show_help: bool,cwd: str, identify: str, all_time, filename: st
                 sys.stderr.write(f"Could not find the desired file within the current branch\n")
             sys.exit(1)
 
-        def finalize(traverser):
+        def finalize(traverser: BackTraverser):
 
             if identify:
                 if repo.active_branch.name != traverser.get_branch_name():
-                    sys.stdout.write(f"{repo.active_branch.name}/{traverser.get_commit().hexsha()}\n")
+                    sys.stdout.write(f"{repo.active_branch.name}/{traverser.get_commit().hexsha}\n")
                 else:
-                    sys.stdout.write(f"{repo.active_branch.name}/{traverser.get_commit().hexsha()}\n")
+                    sys.stdout.write(f"{repo.active_branch.name}/{traverser.get_commit().hexsha}\n")
             else:
                 t_tree = satisfied[0].get_commit().tree
                 t_blob = t_tree / filename
                 # we already know it exists, and if there is some issue, it will reach the catch-all error handling
-                blob_contents = t_blob.read_text(encoding="utf-8")
-                sys.stdout.write(blob_contents)
+                sys.stdout.write(t_blob.data_stream.read().decode("utf-8"))
+                
             sys.exit(0)
 
         if len(satisfied) == 1:
