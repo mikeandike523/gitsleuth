@@ -31,7 +31,11 @@ ROUTES = {
     "source-tree": SimpleNamespace(
         file="source_tree.py",
         short_description="Visualize the source tree of the repository"
-    )
+    ),
+    "recover-file": SimpleNamespace(
+        file="recover_file.py",
+        short_description="Recover a file from an old commit"
+    ),
 }
 
 @click.command(context_settings=dict(
