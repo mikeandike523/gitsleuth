@@ -76,14 +76,12 @@ class BackTraverser:
         return satisfied
 
 
-@click.command()
-@click.option("-h","--help","show_help",is_flag=True)
-@click.option("--cwd","cwd", default=None)
+@click.command(name="recover-file")
 @click.option("--identify", is_flag=True, default=False)
 @click.option("--all-time", is_flag=True, default=False)
 # `required` argument had to be false since the "gitsleuth" launcher was being tripped up in the -h/--help case
 @click.argument("filename", required=False,type=click.STRING)
-def recover_file(show_help: bool,cwd: str, identify: str, all_time, filename: str):
+def recover_file(identify: str, all_time, filename: str):
     """
     Command: recover-file
 
@@ -110,18 +108,6 @@ def recover_file(show_help: bool,cwd: str, identify: str, all_time, filename: st
     `gitsleuth recover-file <filename> <OPTIONS>`
 
     """
-
-    if show_help:
-        click.echo(dedent(recover_file.__doc__))
-        sys.exit(0)
-
-    # checks to make sure that not performing operations on the gitsleuth installation directory
-    if os.path.normpath(os.path.realpath(cwd)) == os.path.normpath(os.path.realpath(
-        os.path.dirname(os.path.dirname(os.path.abspath(__file__))))):
-        sys.stderr.write(f"Could not open repository in \"{os.getcwd()}\": {e}\n")
-        sys.exit(1)
-
-    os.chdir(cwd)
 
     if not filename:
         sys.stderr.write("No filename provided\n")
@@ -228,6 +214,3 @@ def recover_file(show_help: bool,cwd: str, identify: str, all_time, filename: st
         sys.stderr.write(tb)
         sys.stderr.write("\n")
         sys.exit(1)
-
-if __name__ == '__main__':
-    recover_file()

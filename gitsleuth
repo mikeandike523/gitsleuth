@@ -6,10 +6,10 @@ dn="$(dirname "$0")"
 # Check the operating system
 if [[ "$OSTYPE" == "darwin"* || "$OSTYPE" == "linux-gnu" ]]; then
     # On macOS or Linux, use the virtualenv's Python
-    "$dn/pyenv/bin/python3" "$dn/gitsleuth.py" "$(pwd)" "$@"
+    "$dn/pyenv/bin/python3" "$dn/gitsleuth.py" "$@"
 elif [[ "$OSTYPE" == "msys" || "$OSTYPE" == "win32" ]]; then
     # On Windows, use the virtualenv's Python
-    "$dn/pyenv/Scripts/python.exe" "$dn/gitsleuth.py" "$(pwd)" "$@"
+    "$dn/pyenv/Scripts/python.exe" "$dn/gitsleuth.py" "$@"
 else
     echo "Unsupported operating system: $OSTYPE"
     exit 1

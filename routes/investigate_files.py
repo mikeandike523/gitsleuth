@@ -11,12 +11,10 @@ from termcolor import colored
 
 from lib.git.retrieve_file import retrieve_file_bytes_from_hash
 
-@click.command()
-@click.option("-h","--help","show_help",is_flag=True)
-@click.option("--cwd","cwd", default=None)
+@click.command(name="investigate-files")
 @click.option("--hash", required=True, type=click.STRING)
 @click.argument("filenames",nargs=-1,type=click.STRING)
-def investigate_files(show_help: bool,cwd: str, hash: str, filenames: [str]):
+def investigate_files(hash: str, filenames: [str]):
     """
     Command: investigate-files
 
@@ -33,16 +31,7 @@ def investigate_files(show_help: bool,cwd: str, hash: str, filenames: [str]):
 
     """
 
-    if show_help:
-        click.echo(dedent(investigate_files.__doc__))
-        sys.exit(0)
-
-    if os.path.normpath(os.path.realpath(cwd)) == os.path.normpath(os.path.realpath(
-        os.path.dirname(os.path.dirname(os.path.abspath(__file__))))):
-        sys.stderr.write(f"Could not open repository in \"{os.getcwd()}\": {e}\n")
-        sys.exit(1)
-
-    os.chdir(cwd)
+    cwd = os.getcwd()
 
     outdir = os.path.normpath(os.path.join(cwd, '.gitsleuth','investigation'))
 
@@ -79,10 +68,4 @@ def investigate_files(show_help: bool,cwd: str, hash: str, filenames: [str]):
             print(colored(f"Wrote {file} to {out_file}...", "green"))     
 
         except FileNotFoundError as e:
-            print(colored(f"Could not find {file} in repository, skipping...", "red"))            
-
-
-    
-
-if __name__ == '__main__':
-    investigate_files()
+            print(colored(f"Could not find {file} in repository, skipping...", "red"))     

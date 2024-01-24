@@ -1,1 +1,1 @@
-%~dp0pyenv\Scripts\python.exe  %~dp0gitsleuth.py "%CD%" %*
+%~dp0pyenv\Scripts\python.exe  %~dp0gitsleuth.py %*

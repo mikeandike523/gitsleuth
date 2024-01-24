@@ -13,10 +13,8 @@ import subprocess
 from lib.git.commit_tracing import create_commit_trace, convert_to_digraph
 
 
-@click.command()
-@click.option("-h","--help","show_help",is_flag=True)
-@click.option("--cwd","cwd", default=None)
-def setup_tracking(show_help,cwd):
+@click.command(name="setup-tracking")
+def setup_tracking():
     """
     Command: setup-tracking
 
@@ -26,14 +24,7 @@ def setup_tracking(show_help,cwd):
     -h --help - show this help message and exit.
     """
 
-    if show_help:
-        click.echo(dedent(setup_tracking.__doc__))
-        sys.exit(0)
-
-    if os.path.normpath(os.path.realpath(cwd)) == os.path.normpath(os.path.realpath(
-        os.path.dirname(os.path.dirname(os.path.abspath(__file__))))):
-        sys.stderr.write(f"Could not open repository in \"{os.getcwd()}\": {e}\n")
-        sys.exit(1)
+    cwd=os.getcwd()
 
     os.chdir(cwd)
 
@@ -66,7 +57,3 @@ def setup_tracking(show_help,cwd):
         print(stdout.decode("utf-8").strip("\n"))
 
     stdout, stderr = subprocess.Popen(["git","checkout","master"]).communicate()
-
-if __name__ == '__main__':
-    setup_tracking()
-

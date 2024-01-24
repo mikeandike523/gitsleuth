@@ -11,11 +11,9 @@ import re
 from lib.git.commit_tracing import create_commit_trace, convert_to_digraph
 
 
-@click.command()
-@click.option("-h","--help","show_help",is_flag=True)
-@click.option("--cwd","cwd", default=None)
+@click.command('trace-local')
 @click.option("-o","--out","out", required=False, default=None)
-def trace_local(show_help,cwd,out):
+def trace_local(out):
     """
     Command: trace-local
 
@@ -29,9 +27,7 @@ def trace_local(show_help,cwd,out):
     -o --out - The output file path, relative to ./.gitsleuth/reports
     """
 
-    if show_help:
-        click.echo(dedent(trace_local.__doc__))
-        sys.exit(0)
+    cwd = os.getcwd()
 
     if os.path.normpath(os.path.realpath(cwd)) == os.path.normpath(os.path.realpath(
         os.path.dirname(os.path.dirname(os.path.abspath(__file__))))):
@@ -71,6 +67,3 @@ def trace_local(show_help,cwd,out):
     fullout = os.path.join(cwd, '.gitsleuth','reports', out)
 
     print(f"Generated files:\n\t1.{fullout}\n\t2.{fullout}.pdf")
-
-if __name__ == '__main__':
-    trace_local()
