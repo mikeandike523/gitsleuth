@@ -32,8 +32,8 @@ def source_tree(
     checklist: bool
 ):
     cwd=os.getcwd()
-
-    if subcommand == "list":
+    
+    if subcommand == "list" or subcommand == "list-included":
         files=list_source_files(cwd)
         for i,file in enumerate(files):
             if checklist:
