@@ -10,8 +10,8 @@ import subprocess
 import traceback
 from textwrap import dedent
 from typing import Callable, List
-from shutil import which
-
+from shutil import which, rmtree
+import random
 
 import click
 import git
@@ -51,11 +51,27 @@ def main(branch_name: str, command: str):
     
     command = [which("bash"), "-c", command]
 
-    with tempfile.TemporaryDirectory() as temp_dir:
-        wt_name = os.path.join(temp_dir,"wt")
-        subprocess.run(["git","worktree","add",wt_name,branch_name],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-        # run_command_with_monitoring(command,cwd=wt_name,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-        subprocess.run(command,cwd=wt_name)
+    temp_dir_name = None
+
+    base_temp_dir = tempfile.gettempdir()
+
+    def get_random_name():
+        return "".join([random.choice("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") for _ in range(32)])
+    
+    try:
+        temp_dir_name = os.path.join(base_temp_dir,get_random_name())
+
+        while os.path.exists(temp_dir_name):
+            temp_dir_name = os.path.join(base_temp_dir,get_random_name())
+
+        os.makedirs(temp_dir_name,exist_ok=True)
+
+        subprocess.run(["git","worktree","add",temp_dir_name,branch_name],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        subprocess.run(command,cwd=temp_dir_name)
+    finally:
+        if temp_dir_name is not None:
+            if os.path.isdir(temp_dir_name):
+                rmtree(temp_dir_name)
 
     subprocess.run(["git","worktree","prune"],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
 
