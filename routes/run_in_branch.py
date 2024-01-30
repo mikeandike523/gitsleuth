@@ -17,6 +17,8 @@ import click
 import git
 from termcolor import colored
 
+from lib.subprocess_management import run_command_with_monitoring
+
 def print_error(text,end="\n"):
     sys.stderr.write(colored(text,"red")+end)
 
@@ -52,12 +54,8 @@ def main(branch_name: str, command: str):
     with tempfile.TemporaryDirectory() as temp_dir:
         wt_name = os.path.join(temp_dir,"wt")
         subprocess.run(["git","worktree","add",wt_name,branch_name],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-        proc=subprocess.Popen(command,cwd=wt_name,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-        stdout,stderr = proc.communicate()
-        if stdout is not None:
-            print(stdout.decode("utf-8"))
-        if stderr is not None:
-            print(colored(stderr.decode("utf-8"),"red"))
+        # run_command_with_monitoring(command,cwd=wt_name,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        subprocess.run(command,cwd=wt_name)
 
     subprocess.run(["git","worktree","prune"],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
 
