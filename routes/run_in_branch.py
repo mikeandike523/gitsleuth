@@ -58,22 +58,23 @@ def main(branch_name: str, command: str):
     def get_random_name():
         return "".join([random.choice("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") for _ in range(32)])
     
+    subprocess.Popen(["git","worktree","prune"]).communicate()
+
     try:
         temp_dir_name = os.path.join(base_temp_dir,get_random_name())
 
         while os.path.exists(temp_dir_name):
             temp_dir_name = os.path.join(base_temp_dir,get_random_name())
 
-        os.makedirs(temp_dir_name,exist_ok=True)
 
-        subprocess.run(["git","worktree","add",temp_dir_name,branch_name],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-        subprocess.run(command,cwd=temp_dir_name)
+        subprocess.Popen(["git","worktree","add",temp_dir_name,branch_name]).communicate()
+        subprocess.Popen(command,cwd=temp_dir_name).communicate()
     finally:
         if temp_dir_name is not None:
             if os.path.isdir(temp_dir_name):
                 rmtree(temp_dir_name)
 
-    subprocess.run(["git","worktree","prune"],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    subprocess.Popen(["git","worktree","prune"]).communicate()
 
 @click.command(name="run-in-branch")
 @click.argument("branch_name", required=False,type=click.STRING)
@@ -86,11 +87,6 @@ def run_in_branch(branch_name: str, command: str):
     
     A worktree is silently created in a temporary directory and the commands and the shell script is run within it
 
-    ATTENTION!
-    1.  Present argument <COMMAND> as quoted text for safety.
-        You will be subject to the quotation rules of both bash and the shell you are calling "gitsleuth" from.
-    2.  "git worktree prune" will be called after running the command.
-    
     Usage:
     gitsleuth run-in-branch <BRANCH NAME> <COMMAND>
     """
