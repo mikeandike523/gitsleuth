@@ -21,8 +21,11 @@ class BranchBoundaryError(Exception):
 
 class NoParentsError(Exception):
 
-    def __init__(commit: git.Commit):
-        super(f"Commit {commit.hexsha} has no parents. It may be the repository eroot or related to a rebase operation")
+    def __init__(self, commit: git.Commit):
+        self.commit = commit
+
+    def __str__(self):
+        return f"Commit {self.commit.hexsha} has no parents. It may be the repository error"
 
 def get_branchstart_name(commit: git.Commit, repo: git.Repo) -> str:
     # Loop through the list of branches and check if starting commit hash is same as the provided commit
