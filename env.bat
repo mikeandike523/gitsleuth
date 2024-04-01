@@ -1,1 +1,0 @@
-%~dp0pyenv\Scripts\activate.bat

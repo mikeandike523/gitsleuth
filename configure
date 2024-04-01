@@ -1,24 +1,22 @@
 #!/bin/bash
 
-cd "$(dirname "$0")"
+dn="$(dirname "$(realpath "$0")")"
+cd "$dn"
 
 chmod +x ./env.sh
 chmod +x ./vne.sh
 
 chmod +x ./gitsleuth
 
-python3.12 -m pip install virtualenv
-python3.12 -m vitualenv pyenv
+python3 -m pip install virtualenv
+python3 -m vitualenv pyenv
 
 chmod +x ./pyenv/bin/activate
 chmod +x ./pyenv/bin/python
 chmod +x ./pyenv/bin/python3
 chmod +x ./pyenv/bin/python3.12
 
-
-source ./env.sh
 python -m pip install -r requirements.txt
-source ./vne.sh
 
 # adding GITSLEUTH to the path
 
