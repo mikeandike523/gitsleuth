@@ -1,5 +1,15 @@
 #!/bin/bash
 
-$dn="$(dirname "$(realpath "$0")")"
+command_path="$(realpath "$0")"
+
+if [ -L "$file" ]; then
+    echo "$command_path is a symbolic link."
+    target=$(readlink "$command_path")
+    echo "The target of the link is: $target"
+else
+    echo "$command_path is not a symbolic link."
+fi
+
+$dn="$(dirname "$command_path")"
 
 "$dn/__python" "$dn/gitsleuth.py" "$@"
