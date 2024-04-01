@@ -28,4 +28,4 @@ chmod +x ./safelink.sh
 
 ./__python -m pip install --no-cache --force-reinstall -r requirements.txt
 
-./safelink.sh "/usr/local/bin/gitsleuth" "$dn/gitsleuth"
+./safelink.sh "$dn/gitsleuth" "/usr/local/bin/gitsleuth" 
