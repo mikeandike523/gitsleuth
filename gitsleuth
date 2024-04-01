@@ -1,1 +1,5 @@
-/usr/local/bin/gitsleuth
+#!/bin/bash
+
+$dn="$(dirname "$(realpath "$0")")"
+
+"$dn/__python" "$dn/gitsleuth.py" "$@"
