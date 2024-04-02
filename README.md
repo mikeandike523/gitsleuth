@@ -4,7 +4,7 @@ A collection of git utilities, developed as I work on projects
 
 ## Requirements
 
-* Python 3.10 or above
+todo
 
 ### Command Specific Requirements
 
@@ -12,11 +12,7 @@ A collection of git utilities, developed as I work on projects
 
 ## Installation
 
-* Superuser priveleges required (user must be able to use sudo)
-* `curl https://raw.githubusercontent.com/mikeandike523/gitsleuth/main/install.sh | bash`
-   Warning! Although this installation method is common practice, there are security risks
-   Consider downloading the install script first, examining it, and then executing it
-* Some actions in the install script use `sudo` so you may be prompted to enter your password
+todo
 
 
 ## Usage
