@@ -23,7 +23,7 @@ def from_root(*segments):
 def cli():
     pass
 
-cli.add_command(trace_local)
+cli.add_command(trace_local) 
 cli.add_command(setup_tracking)
 cli.add_command(investigate_files)
 cli.add_command(source_tree)
