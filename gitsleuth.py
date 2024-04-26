@@ -22,11 +22,8 @@ def from_root(*segments):
 @click.group()
 def cli():
     """
-    Usage: gitsleuth [SUBCOMMAND] [OPTIONS] [args]
-
     run gitsleuth [SUBCOMMAND] --help for more information about a subcommand
     """
-    pass
 
 cli.add_command(trace_local) 
 cli.add_command(setup_tracking)
