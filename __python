@@ -4,15 +4,6 @@
 dn="$(dirname "$(realpath "$0")")"
 
 # Check the operating system
-if [[ "$OSTYPE" == "darwin"* || "$OSTYPE" == "linux-gnu" ]]; then
-    "$dn/pyenv/bin/activate"
-    python3 "$@"
-    deactivate
-elif [[ "$OSTYPE" == "msys" || "$OSTYPE" == "win32" ]]; then
-    "$dn/pyenv/Scripts/activate"
-    python3 "$@"
-    deactivate
-else
-    echo "Unsupported operating system: $OSTYPE"
-    exit 1
-fi
+source "$dn/pyenv/bin/activate"
+python3 "$@"
+deactivate
