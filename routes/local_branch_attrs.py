@@ -1,19 +1,22 @@
 import re
 import json
+import os
+
 import click
-from git import Repo
+
+from lib.git.repo import open_repo
 
 
 @click.command("local-branch-attrs")
 def local_branch_attrs():
-        """
+    """
     Command: local-branch-attrs
 
     Outputs a JSON-formatted dictionary of up-to-date local branch attributes, as detected
     by the pattern '@attr[attr_name]=value' in commit messages.
     """
         
-    repo = Repo(".")
+    repo = open_repo(os.getcwd())
     branch_attrs = {}
 
     # Iterate over local branches
