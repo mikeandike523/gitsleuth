@@ -15,6 +15,7 @@ from routes.investigate_files import investigate_files
 from routes.source_tree import source_tree
 from routes.recover_file import recover_file
 from routes.run_in_branch import run_in_branch
+from routes.local_branch_attrs import local_branch_attrs
 
 def from_root(*segments):
     return os.path.join(os.path.dirname(os.path.abspath(__file__)), *segments)
@@ -31,6 +32,7 @@ cli.add_command(investigate_files)
 cli.add_command(source_tree)
 cli.add_command(recover_file)
 cli.add_command(run_in_branch)
+cli.add_command(local_branch_attrs)
 
 if __name__ == '__main__':
     cli()

@@ -3,9 +3,17 @@ import json
 import click
 from git import Repo
 
-@click.command()
+
+@click.command("local-branch-attrs")
 def local_branch_attrs():
-    repo = Repo('.')
+        """
+    Command: local-branch-attrs
+
+    Outputs a JSON-formatted dictionary of up-to-date local branch attributes, as detected
+    by the pattern '@attr[attr_name]=value' in commit messages.
+    """
+        
+    repo = Repo(".")
     branch_attrs = {}
 
     # Iterate over local branches
@@ -14,7 +22,7 @@ def local_branch_attrs():
         attrs = {}
 
         # Regex to detect the pattern '@attr[attr_name]=value'
-        pattern = re.compile(r'@attr\[(\w+)\]=(.*)')
+        pattern = re.compile(r"@attr\[(\w+)\]=(.*)")
 
         # Collect attributes from commit messages
         for commit in commits:
@@ -30,5 +38,6 @@ def local_branch_attrs():
     # Output the dictionary in JSON format
     print(json.dumps(branch_attrs, indent=2))
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     local_branch_attrs()
