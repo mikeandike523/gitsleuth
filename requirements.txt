@@ -6,3 +6,5 @@ GitPython==3.1.35
 graphviz==0.20.1
 smmap==5.0.0
 termcolor==2.3.0
+tabulate
+natsort

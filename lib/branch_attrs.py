@@ -1,14 +1,9 @@
-import re
-import json
 import os
-
-import click
+import re
 
 from lib.git.repo import open_repo
 
-
-@click.command("local-branch-attrs")
-def local_branch_attrs():
+def get_branch_attrs():
     """
     Command: local-branch-attrs
 
@@ -39,8 +34,4 @@ def local_branch_attrs():
         branch_attrs[branch.name] = attrs
 
     # Output the dictionary in JSON format
-    print(json.dumps(branch_attrs, indent=2))
-
-
-if __name__ == "__main__":
-    local_branch_attrs()
+    return branch_attrs
