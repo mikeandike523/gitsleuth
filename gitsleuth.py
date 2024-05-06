@@ -16,6 +16,7 @@ from routes.source_tree import source_tree
 from routes.recover_file import recover_file
 from routes.run_in_branch import run_in_branch
 from routes.branch_attrs import branch_attrs
+from routes.list_branches import list_branches
 
 def from_root(*segments):
     return os.path.join(os.path.dirname(os.path.abspath(__file__)), *segments)
@@ -33,6 +34,7 @@ cli.add_command(source_tree)
 cli.add_command(recover_file)
 cli.add_command(run_in_branch)
 cli.add_command(branch_attrs)
+cli.add_command(list_branches)
 
 if __name__ == '__main__':
     cli()
