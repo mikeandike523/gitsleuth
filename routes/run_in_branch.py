@@ -78,7 +78,7 @@ def main(branch_name: str, command: str):
 
 @click.command(name="run-in-branch")
 @click.argument("branch_name", required=False,type=click.STRING)
-@click.argument("command", required=False,type=click.STRING)
+@click.argument("command", nargs=-1, required=True,type=click.STRING)
 def run_in_branch(branch_name: str, command: str):
     """
     Command: run-in-branch
@@ -92,7 +92,7 @@ def run_in_branch(branch_name: str, command: str):
     """
 
     try:
-        main(branch_name,command)
+        main(branch_name," ".join(command))
     except Exception as e:
         print_error(f"Error running script file within branch {branch_name}:")
         print_error(str(e))
