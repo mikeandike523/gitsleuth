@@ -129,15 +129,20 @@ def collect_included_or_excluded_files(repo_root_directory: str, collect_mode: C
         for item in items:
             if item == ".git":
                 continue
-            item_abspath = os.path.join(path_to_listdir, item)
-            if should_skip(item_abspath):
-                if should_collect(item_abspath):
+            item_path = os.path.join(path_to_listdir, item)
+            if os.path.islink(item_path):
+                name=os.path.join(*(preceding + [item]))
+                fullname=f"{name} -> {os.readlink(item_path)}"
+                collected_relpaths.append(fullname)
+                continue
+            if should_skip(item_path):
+                if should_collect(item_path):
                     collected_relpaths.append(os.path.join(*(preceding + [item])))
                 continue
-            if os.path.isdir(item_abspath):
+            if os.path.isdir(item_path):
                 inner(preceding + [item])
             else:
-                if should_collect(item_abspath):
+                if should_collect(item_path):
                     collected_relpaths.append(os.path.join(*(preceding + [item])))
     inner([])
     if path_return_mode == PathReturnMode.RELATIVE:
