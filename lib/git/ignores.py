@@ -161,8 +161,15 @@ def collect_included_or_excluded_files(
                 name = os.path.join(*(preceding + [item]))
                 target = os.readlink(item_path)
                 base = os.path.normpath(repo_root_directory)
-                if target.startswith(base):
-                    target = os.path.relpath(target, repo_root_directory)
+                if os.path.isabs(target):
+                    if target.startswith(base):
+                        target = os.path.relpath(target, repo_root_directory)
+                else:
+                    fp = os.path.normpath(os.path.join(path_to_listdir, target))
+                    if fp.startswith(base):
+                        fp = os.path.relpath(fp, repo_root_directory)
+                        target = fp
+
                 fullname = f"{name} -> {target}"
                 collected_relpaths.append(fullname)
                 continue
