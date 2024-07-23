@@ -170,7 +170,7 @@ def collect_included_or_excluded_files(
                         fp = os.path.relpath(fp, repo_root_directory)
                         target = fp
 
-                fullname = f"{name} -> {target}"
+                fullname = f"{name} -> {target if len(preceding) == 0 else ('/'.join(['..' for _ in preceding])+"/"+os.path.basename(target))}"
                 collected_relpaths.append(fullname)
                 continue
             if should_skip(item_path):
