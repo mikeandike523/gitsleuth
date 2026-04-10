@@ -1,9 +1,16 @@
 #!/bin/bash
 
 # Get the directory of the script
-dn="$(dirname "$(realpath "$0")")"
+dn="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 
-# Check the operating system
-source "$dn/pyenv/bin/activate"
+if [ -f "$dn/pyenv/Scripts/activate" ]; then
+    source "$dn/pyenv/Scripts/activate"
+elif [ -f "$dn/pyenv/bin/activate" ]; then
+    source "$dn/pyenv/bin/activate"
+else
+    echo "Error: no activation script found in $dn/pyenv" >&2
+    exit 1
+fi
+
 python3 "$@"
 deactivate
